@@ -1,0 +1,30 @@
+The revised SIMPLE solver consists of the following class files:
+FOAM_to_readable.py
+Mesh.cpp (Computational Mesh)
+SparseAddress.cpp (Addressing class for sparse matrix)
+SparseMat.cpp (Sparse matrix class, row-major format)
+GSSmooth.cpp (Gauss Seidel Smoother class for sparse linear system Ax = b)
+GSSolver.cpp (Gauss Seidel Solver class for sparse linear system)
+SLS.cpp (Sparse Linear System class)
+SIMPLE_Solve.cpp (Script containing main function to run simulation)
+FOAM_to_readable.py (script to convert FOAM mesh files to format readable by Mesh.cpp)
+Run_Revised_SIMPLE.sh (Bash file to compile AND run simulation)
+
+FOAM_to_readable.py is a simple python script that reads a set of mesh files from OpenFOAM and converts these to a format readable by Mesh.cpp.
+
+A SIMPLE simulation may be run by running the script Run_Revised_SIMPLE.sh. Once the files are compiled, the executable will immediately be executed and the user will be prompted to enter a Reynolds number and a tolerance for the absolute change to solutions between iterations for the lid-driven cavity simulation. 
+
+The maximal absolute change to each variable solution between the current and the previous iteration will be output at each 10th iteration. This will allow the user to gauge the time remaining, given the provided tolerance.
+
+Once the executable is finished, 2 new files will be present in the corresponding directory: "Sols_Re(integer of Reynolds number input).dat" and "Norms_Re(integer of Reynolds number input).dat". The former contains 5 columns: x and y coordinates in addition to x-velocity, y-velocity, and density scaled pressure solutions after convergence, all in row-major format. 
+The latter file contains 9 columns: for each variable, the residual infinity norm after 200 sweeps of the Gauss-Seidel algorithm for the inner solutions, the infinity norm in the change to inner solutions (across all variables), the infinity norm in the change to outer solutions (across all variables)
+
+The additional python script plot_vel.py will generate a plot for the velocity norm, including a streamline starting at (0.07,0.07). The file is currently set to generate a plot for the file Sols_Re100.dat, but this may be changed for the Reynolds number on which the user has done the simulation. Scipy's initial value problem solver with a Runge-Kutta method has been used to generate the streamlines. A plane is fitted on adjacent solutions or boundaries in order to obtain velocities at a general point (x,y). 
+
+The profiles for a solution may be plotted with plot_pressure.gp, plot_vx.gp and plot_vy.gp. Residuals norms may be plotted with plot_res.gp. Similarly, inner and outer norms on the change between iteration may be plotted with plot_conv.gp
+
+The centre line comparisons to Ghia et al may be plotted with plot_line.py.
+
+The user must have the c++ library Eigen installed for the code to be able to compile.
+
+This repository may also be found online at: https://github.com/sondrewi/Pressure_Velocity
